@@ -79,8 +79,8 @@ if plot_mode == 0: # fixed camera = plot in CCS
 elif plot_mode == 1: # fixed chessboard = plot in WCS
     
     for i_ex in range(len(rvec)):
-        R_c2w = np.linalg.inv(cv2.Rodrigues(rvec[i_ex])[0]) #　世界座標系におけるカメラの向き
-        t_c2w = -R_c2w.dot(tvec[i_ex]).reshape((1,3)) # 世界座標系におけるカメラの位置
+        R_c2w = np.linalg.inv(cv2.Rodrigues(rvec[i_ex])[0]) #　Camera orientation in the world coordinate system
+        t_c2w = -R_c2w.dot(tvec[i_ex]).reshape((1,3)) # Camera position in the world coordinate system
         
         plotCamera(ax_in, R_c2w, t_c2w, color="b", scale=camera_size)
         

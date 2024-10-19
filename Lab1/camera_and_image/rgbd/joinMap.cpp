@@ -10,24 +10,24 @@ using namespace std;
 typedef vector<Sophus::SE3d, Eigen::aligned_allocator<Sophus::SE3d>> TrajectoryType;
 typedef Eigen::Matrix<double, 6, 1> Vector6d;
 
-// 在pangolin中画图，已写好，无需调整
+// Drawing in pangolin
 void showPointCloud(
     const vector<Vector6d, Eigen::aligned_allocator<Vector6d>> &pointcloud);
 
 int main(int argc, char **argv) {
-    vector<cv::Mat> colorImgs, depthImgs;    // 彩色图和深度图
-    TrajectoryType poses;         // 相机位姿
+    vector<cv::Mat> colorImgs, depthImgs;    // Color and depth images
+    TrajectoryType poses;         // camera pose
 
     ifstream fin("../../rgbd/pose.txt");
     if (!fin) {
-        cerr << "请在有pose.txt的目录下运行此程序" << endl;
+        cerr << "Please run this program in a directory where you have pose.txt" << endl;
         return 1;
     }
 
     for (int i = 0; i < 5; i++) {
-        boost::format fmt("../../rgbd/%s/%d.%s"); //图像文件格式
+        boost::format fmt("../../rgbd/%s/%d.%s"); //Image File Format
         colorImgs.push_back(cv::imread((fmt % "color" % (i + 1) % "png").str()));
-        depthImgs.push_back(cv::imread((fmt % "depth" % (i + 1) % "pgm").str(), -1)); // 使用-1读取原始图像
+        depthImgs.push_back(cv::imread((fmt % "depth" % (i + 1) % "pgm").str(), -1)); // Use -1 to read the original image
 
         double data[7] = {0};
         for (auto &d:data)
@@ -37,8 +37,8 @@ int main(int argc, char **argv) {
         poses.push_back(pose);
     }
 
-    // 计算点云并拼接
-    // 相机内参 
+    // Calculate the point cloud and concate it together
+    // Intrinsic camera parameters  
     double cx = 325.5;
     double cy = 253.5;
     double fx = 518.0;
@@ -48,14 +48,14 @@ int main(int argc, char **argv) {
     pointcloud.reserve(1000000);
 
     for (int i = 0; i < 5; i++) {
-        cout << "转换图像中: " << i + 1 << endl;
+        cout << "Converting images: " << i + 1 << endl;
         cv::Mat color = colorImgs[i];
         cv::Mat depth = depthImgs[i];
         Sophus::SE3d T = poses[i];
         for (int v = 0; v < color.rows; v++)
             for (int u = 0; u < color.cols; u++) {
-                unsigned int d = depth.ptr<unsigned short>(v)[u]; // 深度值
-                if (d == 0) continue; // 为0表示没有测量到
+                unsigned int d = depth.ptr<unsigned short>(v)[u]; // depth value
+                if (d == 0) continue; // d == 0 indicates that no measurements were taken
                 Eigen::Vector3d point;
                 point[2] = double(d) / depthScale;
                 point[0] = (u - cx) * point[2] / fx;
@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
             }
     }
 
-    cout << "点云共有" << pointcloud.size() << "个点." << endl;
+    cout << "The point cloud has" << pointcloud.size() << "points." << endl;
     showPointCloud(pointcloud);
     return 0;
 }

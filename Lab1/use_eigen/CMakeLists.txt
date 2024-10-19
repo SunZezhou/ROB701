@@ -3,7 +3,6 @@ project(chapter3)
 
 set(CMAKE_CXX_FLAGS "-std=c++14")
 
-# 加入各子工程
 add_subdirectory(useEigen)
 add_subdirectory(useGeometry)
 add_subdirectory(visualizeGeometry)
