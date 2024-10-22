@@ -1,6 +1,6 @@
 #include <opencv2/opencv.hpp>
 #include <sophus/se3.hpp>
-#include <boost/format.hpp>
+// #include <boost/format.hpp>
 #include <pangolin/pangolin.h>
 
 using namespace std;
@@ -14,7 +14,7 @@ double baseline = 0.573;
 // paths
 string left_file = "../left.png";
 string disparity_file = "../disparity.png";
-boost::format fmt_others("../%06d.png");    // other files
+// boost::format fmt_others("../%06d.png");    // other files
 
 // useful typedefs
 typedef Eigen::Matrix<double, 6, 6> Matrix6d;
@@ -146,7 +146,9 @@ int main(int argc, char **argv) {
     Sophus::SE3d T_cur_ref;
 
     for (int i = 1; i < 6; i++) {  // 1~10
-        cv::Mat img = cv::imread((fmt_others % i).str(), 0);
+        string fmt_others = "../00000" + std::to_string(i) + ".png";
+        cv::Mat img = cv::imread(fmt_others, 0);
+        // cv::Mat img = cv::imread((fmt_others % i).str(), 0);
         // try single layer by uncomment this line
         // DirectPoseEstimationSingleLayer(left_img, img, pixels_ref, depth_ref, T_cur_ref);
         DirectPoseEstimationMultiLayer(left_img, img, pixels_ref, depth_ref, T_cur_ref);

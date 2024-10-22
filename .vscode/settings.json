@@ -1,3 +1,6 @@
 {
-    "cmake.sourceDirectory": "/home/zezhousun/Documents/ROB701/3rdparty/DBoW3"
+    "cmake.sourceDirectory": "/home/zezhousun/Documents/ROB701/3rdparty/DBoW3",
+    "files.associations": {
+        "list": "cpp"
+    }
 }
